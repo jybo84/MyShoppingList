@@ -14,6 +14,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainActivityViewModel
 //     var viewModel: MainActivityViewModel by viewModels() TODO() почему так не работает
 
+    val ll_shop_item by lazy {  }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
