@@ -27,8 +27,7 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
         viewModel.shopList.observe(this) {
             Log.i("!!!", it.toString())
-            val item = it[0]
-            viewModel.deleteShopItem(item)
+
         }
     }
 }
