@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.myshoppinglist.R
+import com.example.myshoppinglist.databinding.ActivityMainBinding
 import com.example.myshoppinglist.domain.ShopItem
 
 class MainActivity : AppCompatActivity() {
@@ -17,18 +18,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainActivityViewModel
 //     var viewModel: MainActivityViewModel by viewModels() TODO() почему так не работает
 
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+
     private lateinit var llShopItem: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+
+        setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        llShopItem = findViewById(R.id.ll_shop_item)
+
+        llShopItem = binding.llShopItem
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
         viewModel.shopList.observe(this) {
             showList(it)
@@ -45,8 +50,12 @@ class MainActivity : AppCompatActivity() {
                 R.layout.item_shop_disabled
 
             val createView = LayoutInflater.from(this).inflate(card, llShopItem, false)
+
             val count = createView.findViewById<TextView>(R.id.tv_count)
             count.text = el.count.toString()
+
+            val name = createView.findViewById<TextView>(R.id.tv_name)
+            name.text = el.name
 
             createView.setOnLongClickListener {
                 viewModel.changeEnableState(el)
