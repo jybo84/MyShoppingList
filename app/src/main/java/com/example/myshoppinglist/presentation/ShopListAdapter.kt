@@ -26,8 +26,7 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopListViewHolder>
             else -> throw RuntimeException("неизвестный тип")
         }
 
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_shop_disabled, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return ShopListViewHolder(view)
     }
 
