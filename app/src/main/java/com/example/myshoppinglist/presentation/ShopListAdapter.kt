@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myshoppinglist.R
 import com.example.myshoppinglist.domain.ShopItem
 
-class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopListViewHolder>() {
+class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopListViewHolder>() {
 
     var shopList = listOf<ShopItem>()
 
@@ -20,8 +20,13 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopListViewHolder>(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopListViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_shop_disabled, parent, false)
+        val layout = when (viewType) {
+            VIEW_TYPE_ENABLED -> R.layout.item_shop_enabled
+            VIEW_TYPE_DISABLED -> R.layout.item_shop_disabled
+            else -> throw RuntimeException("неизвестный тип")
+        }
+
+        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return ShopListViewHolder(view)
     }
 
@@ -29,30 +34,23 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopListViewHolder>(
         return shopList.size
     }
 
+    override fun getItemViewType(position: Int): Int {
+        val item = shopList[position]
+        return if (item.enabled)
+            VIEW_TYPE_ENABLED
+        else
+            VIEW_TYPE_DISABLED
+    }
+
     override fun onBindViewHolder(holder: ShopListViewHolder, position: Int) {
         val shopItem = shopList[position]
-        val status = if (shopItem.enabled)
-            "active"
-        else
-            "not active"
-        if (shopItem.enabled) {
-            holder.tvName.text = "${shopItem.name} ${status}"
-            holder.tvCount.text = shopItem.count.toString()
-            holder.tvName.setTextColor(
-                ContextCompat.getColor(
-                    holder.itemView.context,
-                    android.R.color.holo_purple
-                )
-            )
-        } else {
-            holder.tvName.text = ""
-            holder.tvCount.text = ""
-            holder.tvName.setTextColor(
-                ContextCompat.getColor(
-                    holder.itemView.context,
-                    android.R.color.black
-                )
-            )
-        }
+        holder.tvName.text = shopItem.name
+        holder.tvCount.text = shopItem.count.toString()
+    }
+
+    companion object {
+        const val VIEW_TYPE_ENABLED = 1
+        const val VIEW_TYPE_DISABLED = 0
+        const val MAX_POOL_SIZE = 10
     }
 }
