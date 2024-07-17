@@ -36,7 +36,7 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopListViewHolder>(
         else
             "not active"
         if (shopItem.enabled) {
-            holder.tvName.text = "${shopItem.name} ${status}"
+            holder.tvName.text = "${shopItem.name} $status"
             holder.tvCount.text = shopItem.count.toString()
             holder.tvName.setTextColor(
                 ContextCompat.getColor(
