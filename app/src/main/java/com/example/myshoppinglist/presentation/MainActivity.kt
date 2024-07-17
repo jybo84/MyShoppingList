@@ -1,17 +1,14 @@
 package com.example.myshoppinglist.presentation
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myshoppinglist.R
 import com.example.myshoppinglist.databinding.ActivityMainBinding
-import com.example.myshoppinglist.domain.ShopItem
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
-    private lateinit var llShopItem: LinearLayout
+    private lateinit var adapter: ShopListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,37 +29,16 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        llShopItem = binding.llShopItem
+        setupRecyclerView()
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
         viewModel.shopList.observe(this) {
-            showList(it)
-
+            adapter.shopList = it
         }
     }
 
-    private fun showList(list: List<ShopItem>) {
-        llShopItem.removeAllViews()
-        for (el in list) {
-            val card = if (el.enabled)
-                R.layout.item_shop_enabled
-            else
-                R.layout.item_shop_disabled
-
-            val createView = LayoutInflater.from(this).inflate(card, llShopItem, false)
-
-            val count = createView.findViewById<TextView>(R.id.tv_count)
-            count.text = el.count.toString()
-
-            val name = createView.findViewById<TextView>(R.id.tv_name)
-            name.text = el.name
-
-            createView.setOnLongClickListener {
-                viewModel.changeEnableState(el)
-                true
-            }
-                llShopItem.addView(createView)
-
-        }
+    private fun setupRecyclerView(){
+        val rvShopList = findViewById<RecyclerView>(R.id.rv_shop_list)
+        adapter = ShopListAdapter()
+        rvShopList.adapter = adapter
     }
 }
