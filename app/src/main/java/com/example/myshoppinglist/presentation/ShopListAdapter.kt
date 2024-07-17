@@ -29,6 +29,14 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopListViewHolder>(
         return shopList.size
     }
 
+    override fun getItemViewType(position: Int): Int {
+        val item = shopList[position]
+        return if (item.enabled)
+            VIEW_TYPE_ENABLED
+            else
+                VIEW_TYPE_DISABLED
+    }
+
     override fun onBindViewHolder(holder: ShopListViewHolder, position: Int) {
         val shopItem = shopList[position]
         val status = if (shopItem.enabled)
@@ -55,4 +63,10 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopListViewHolder>(
             )
         }
     }
+
+    companion object{
+        const val VIEW_TYPE_ENABLED = 1
+        const val VIEW_TYPE_DISABLED = 0
+    }
 }
+
