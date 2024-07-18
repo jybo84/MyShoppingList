@@ -88,7 +88,6 @@ class MainActivity : AppCompatActivity() {
             override fun onShopItemClick(shopItem: ShopItem) {
                 Log.d("!!!", shopItem.toString())
             }
-
         }
     }
 
