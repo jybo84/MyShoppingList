@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myshoppinglist.R
 import com.example.myshoppinglist.databinding.ActivityMainBinding
+import com.example.myshoppinglist.domain.ShopItem
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         shopListAdapter = ShopListAdapter()
         rvShopList.adapter = shopListAdapter
         rvShopList.apply {
+
             recycledViewPool.setMaxRecycledViews(
                 ShopListAdapter.VIEW_TYPE_ENABLED,
                 ShopListAdapter.MAX_POOL_SIZE
@@ -49,6 +51,11 @@ class MainActivity : AppCompatActivity() {
                 ShopListAdapter.VIEW_TYPE_DISABLED,
                 ShopListAdapter.MAX_POOL_SIZE
             )
+        }
+        shopListAdapter.onShopItemLongClickListener = object : ShopListAdapter.OnShopItemLongClickListener{
+            override fun onShopItemLongClick(shopItem: ShopItem) {
+                viewModel.changeEnableState(shopItem)
+            }
         }
     }
 }
