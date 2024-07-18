@@ -54,20 +54,14 @@ class MainActivity : AppCompatActivity() {
                 ShopListAdapter.MAX_POOL_SIZE
             )
         }
-        shopListAdapter.onShopItemLongClickListener =
-            object : ShopListAdapter.OnShopItemLongClickListener {
-                override fun onShopItemLongClick(shopItem: ShopItem) {
-                    viewModel.changeEnableState(shopItem)
-                }
-            }
+        setupLongCkickListener()
 
-        shopListAdapter.onShopItemClickListener = object : ShopListAdapter.OnShopItemClickListener {
-            override fun onShopItemClick(shopItem: ShopItem) {
-                Log.d("!!!", shopItem.toString())
-            }
+        setupClickListener()
 
-        }
+        setupSwipeListener(rvShopList)
+    }
 
+    private fun setupSwipeListener(rvShopList: RecyclerView?) {
         val callback = object : ItemTouchHelper.SimpleCallback(
             0,
             ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
@@ -87,5 +81,23 @@ class MainActivity : AppCompatActivity() {
         }
         val itemTouchHelper = ItemTouchHelper(callback)
         itemTouchHelper.attachToRecyclerView(rvShopList)
+    }
+
+    private fun setupClickListener() {
+        shopListAdapter.onShopItemClickListener = object : ShopListAdapter.OnShopItemClickListener {
+            override fun onShopItemClick(shopItem: ShopItem) {
+                Log.d("!!!", shopItem.toString())
+            }
+
+        }
+    }
+
+    private fun setupLongCkickListener() {
+        shopListAdapter.onShopItemLongClickListener =
+            object : ShopListAdapter.OnShopItemLongClickListener {
+                override fun onShopItemLongClick(shopItem: ShopItem) {
+                    viewModel.changeEnableState(shopItem)
+                }
+            }
     }
 }
