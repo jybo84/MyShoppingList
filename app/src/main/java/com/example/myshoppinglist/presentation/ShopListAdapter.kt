@@ -11,12 +11,13 @@ import com.example.myshoppinglist.domain.ShopItem
 class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopListViewHolder>() {
 
     var shopList = listOf<ShopItem>()
-        set(value)  {
+        set(value) {
             field = value
             notifyDataSetChanged()
         }
 
     var onShopItemLongClickListener: OnShopItemLongClickListener? = null
+    var onShopItemClickListener: OnShopItemClickListener? = null
 
     class ShopListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvName = view.findViewById<TextView>(R.id.tv_name)
@@ -52,6 +53,10 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopListViewHolder>
             onShopItemLongClickListener?.onShopItemLongClick(shopItem)
             true
         }
+        holder.itemView.setOnClickListener {
+            onShopItemClickListener?.onShopItemClick(shopItem)
+            true
+        }
         holder.tvName.text = shopItem.name
         holder.tvCount.text = shopItem.count.toString()
     }
@@ -64,5 +69,9 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopListViewHolder>
 
     interface OnShopItemLongClickListener {
         fun onShopItemLongClick(shopItem: ShopItem)
+    }
+
+    interface OnShopItemClickListener {
+        fun onShopItemClick(shopItem: ShopItem)
     }
 }

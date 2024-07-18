@@ -1,6 +1,7 @@
 package com.example.myshoppinglist.presentation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -56,6 +57,13 @@ class MainActivity : AppCompatActivity() {
             override fun onShopItemLongClick(shopItem: ShopItem) {
                 viewModel.changeEnableState(shopItem)
             }
+            }
+
+        shopListAdapter.onShopItemClickListener = object : ShopListAdapter.OnShopItemClickListener{
+            override fun onShopItemClick(shopItem: ShopItem) {
+                Log.d("!!!", shopItem.toString())
+            }
+
+        }
         }
     }
-}
