@@ -74,14 +74,13 @@ class ShopItemViewModel : ViewModel() {
 
 
     private fun validateInput(inputName: String, inputCount: Int): Boolean {
-        var result = true
-        if (inputName.isBlank())
+        if (inputName.isBlank()) {
             _errorInputName.value = true
-        result = true
-        if (inputCount <= 0)
+        }
+        if (inputCount <= 0) {
             _errorInputCount.value = true
-        result = true
-        return result
+        }
+        return !(errorInputName.value == true || errorInputCount.value == true)
     }
 
 
