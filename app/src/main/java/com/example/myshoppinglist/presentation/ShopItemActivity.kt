@@ -30,7 +30,7 @@ class ShopItemActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+//        enableEdgeToEdge()
         setContentView(R.layout.activity_shop_item)
 //        initViews()
 //        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
