@@ -1,7 +1,7 @@
 package com.example.myshoppinglist.presentation
 
 import android.os.Bundle
-import android.util.Log
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myshoppinglist.R
 import com.example.myshoppinglist.databinding.ActivityMainBinding
 import com.example.myshoppinglist.domain.ShopItem
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     private lateinit var shopListAdapter: ShopListAdapter
+    private lateinit var buttonAddItem: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +34,12 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        buttonAddItem = findViewById(R.id.button_add_shop_item)
+        buttonAddItem.setOnClickListener {
+            val intent = ShopItemActivity.newItemAddItem(this)
+            startActivity(intent)
+        }
+
         setupRecyclerView()
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
         viewModel.shopList.observe(this) {
@@ -86,7 +94,8 @@ class MainActivity : AppCompatActivity() {
     private fun setupClickListener() {
         shopListAdapter.onShopItemClickListener = object : ShopListAdapter.OnShopItemClickListener {
             override fun onShopItemClick(shopItem: ShopItem) {
-                Log.d("!!!", shopItem.toString())
+                val intent = ShopItemActivity.newItemEdiItem(application, shopItem.id)
+                startActivity(intent)
             }
         }
     }
