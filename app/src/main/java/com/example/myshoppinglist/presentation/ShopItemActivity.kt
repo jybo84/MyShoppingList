@@ -83,7 +83,6 @@ class ShopItemActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-
             }
 
         })
