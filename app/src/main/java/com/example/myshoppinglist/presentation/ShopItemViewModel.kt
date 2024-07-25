@@ -1,6 +1,5 @@
 package com.example.myshoppinglist.presentation
 
-import android.widget.EditText
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -61,12 +60,12 @@ class ShopItemViewModel : ViewModel() {
     }
 
     private fun parseName(inputName: String): String {
-        return inputName.trim() ?: " "
+        return inputName.trim()
     }
 
     private fun parseCount(inputCount: String): Int {
         return try {
-            inputCount.toInt() ?: 0
+            inputCount.toInt()
         } catch (e: Exception) {
             0
         }
@@ -74,14 +73,11 @@ class ShopItemViewModel : ViewModel() {
 
 
     private fun validateInput(inputName: String, inputCount: Int): Boolean {
-        var result = true
         if (inputName.isBlank())
             _errorInputName.value = true
-        result = true
         if (inputCount <= 0)
             _errorInputCount.value = true
-        result = true
-        return result
+        return !(_errorInputName.value == true || _errorInputCount.value == true)
     }
 
 
