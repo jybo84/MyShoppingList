@@ -51,7 +51,7 @@ class ShopItemActivity : AppCompatActivity() {
 
     private fun observeViewModels() {
 
-        viewModel.errorInputCount.observe(this) { it->
+        viewModel.errorInputCount.observe(this) { it ->
             val message = if (it == true) {
                 getString(R.string.error_input_count)
             } else {
@@ -157,19 +157,19 @@ class ShopItemActivity : AppCompatActivity() {
     }
 
     private fun launchAddMode() {
+        saveButton.setOnClickListener {
+            viewModel.addShopItem(etName.text.toString(), etCount.text.toString())
+        }
+    }
+
+    private fun launchEditMode() {
         viewModel.getShopItem(shopItem)
         viewModel.shopItem.observe(this) {
             etName.setText(it.name)
             etCount.setText(it.count.toString())
         }
         saveButton.setOnClickListener {
-            viewModel.addShopItem(etName.toString(), etCount.toString())
-        }
-    }
-
-    private fun launchEditMode() {
-        saveButton.setOnClickListener {
-            viewModel.editShopItem(etName.toString(), etCount.toString())
+            viewModel.editShopItem(etName.text.toString(), etCount.text.toString())
         }
     }
 }
