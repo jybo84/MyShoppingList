@@ -17,12 +17,11 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.myshoppinglist.R
+import com.example.myshoppinglist.domain.ShopItem
+import com.example.myshoppinglist.presentation.ShopItemActivity.Companion
 import com.google.android.material.textfield.TextInputLayout
 
-class ShopItemFragment(
-    private val screenMode: String = " ",
-    private val shopItemId: Int = -1,
-) : Fragment() {
+class ShopItemFragment : Fragment() {
 
     private lateinit var tilName: TextInputLayout
     private lateinit var tilCount: TextInputLayout
@@ -31,12 +30,15 @@ class ShopItemFragment(
     private lateinit var saveButton: Button
     private lateinit var viewModel: ShopItemViewModel
 
+    var screenMode: String = MODE_EMPTY
+    var shopItemId: Int = NO_ID
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        parseParams()
         return inflater.inflate(R.layout.fragment_shop_item, container, false)
     }
 
@@ -45,11 +47,9 @@ class ShopItemFragment(
 
         initViews(view)
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-        parseParams()
         launchRightMode()
         addTextChangedListener()
         observeViewModels(view)
-
     }
 
     private fun observeViewModels(view: View) {
@@ -71,7 +71,7 @@ class ShopItemFragment(
             tilName.error = message
         }
         viewModel.shouldCloseScreen.observe(viewLifecycleOwner) {
-//            finish()
+            activity?.onBackPressedDispatcher
         }
     }
 
@@ -108,20 +108,25 @@ class ShopItemFragment(
         private const val EXTRA_SHOP_ITEM_ID = "extra_shop_item_id"
         private const val MODE_EDIT = "mode_edit"
         private const val MODE_ADD = "mode_add"
+        private const val MODE_EMPTY = "mode_empty"
+        private const val NO_ID = -1
 
-        fun newItemAddItem(context: Context): Intent {
-            val intent = Intent(context, ShopItemActivity::class.java)
-            intent.putExtra(EXTRA_SCREEN_MODE, MODE_ADD)
-            Log.d("!!!", "add")
-            return intent
+
+        fun newInstanceEditItem(shopItemId: Int): ShopItemFragment {
+            val args = Bundle()
+            args.putString(EXTRA_SCREEN_MODE, MODE_EDIT)
+            args.putInt(EXTRA_SHOP_ITEM_ID, shopItemId)
+            val fragment = ShopItemFragment()
+            fragment.arguments = args
+            return fragment
         }
 
-        fun newItemEdiItem(context: Context, shopItemId: Int): Intent {
-            val intent = Intent(context, ShopItemActivity::class.java)
-            intent.putExtra(EXTRA_SCREEN_MODE, MODE_EDIT)
-            intent.putExtra(EXTRA_SHOP_ITEM_ID, shopItemId)
-            Log.d("!!!", shopItemId.toString())
-            return intent
+        fun newInstanceAddItem(): ShopItemFragment {
+            val args = Bundle()
+            args.putString(EXTRA_SCREEN_MODE, MODE_ADD)
+            val fragment = ShopItemFragment()
+            fragment.arguments = args
+            return fragment
         }
     }
 
@@ -134,23 +139,20 @@ class ShopItemFragment(
     }
 
     private fun parseParams() {
-        if (screenMode != MODE_EDIT && screenMode != MODE_ADD)
-            throw RuntimeException("первая ошибка")
-        if (screenMode == MODE_EDIT && shopItemId == -1)
-            throw RuntimeException("вторая ошибка")
+        val args = requireArguments()
+        if (!args.containsKey(EXTRA_SCREEN_MODE))
+            throw RuntimeException("ошибка пять")
+        val mode = args.getString(EXTRA_SCREEN_MODE)
+        if (mode != MODE_EDIT && mode != MODE_ADD)
+            throw RuntimeException("ошибка шесть")
+        screenMode = mode
+        if (screenMode == MODE_EDIT) {
+            if (!args.containsKey(EXTRA_SHOP_ITEM_ID))
+                throw RuntimeException("ошибка семь")
+        }
+        shopItemId = args.getInt(EXTRA_SHOP_ITEM_ID, -1)
     }
 
-//        val mode = intent.getStringExtra(EXTRA_SCREEN_MODE)
-//        if (mode != MODE_EDIT && mode != MODE_ADD) {
-//            throw RuntimeException("вторая ошибка")
-//        }
-//        screenMode = mode
-//        if (screenMode == MODE_EDIT) {
-//            if (!intent.hasExtra(EXTRA_SHOP_ITEM_ID)) {
-//                throw RuntimeException("третья ошибка")
-//            }
-//        }
-//        shopItem = intent.getIntExtra(EXTRA_SHOP_ITEM_ID, -1)
 
     private fun launchRightMode() {
         when (screenMode) {
@@ -176,3 +178,4 @@ class ShopItemFragment(
         }
     }
 }
+

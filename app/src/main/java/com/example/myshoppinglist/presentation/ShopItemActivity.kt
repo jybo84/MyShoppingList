@@ -24,18 +24,18 @@ class ShopItemActivity : AppCompatActivity() {
 //    private lateinit var etCount: EditText
 //    private lateinit var saveButton: Button
 //    private lateinit var viewModel: ShopItemViewModel
-//
-//    private var shopItem = -1
-//    private var screenMode = " "
+
+    private var shopItemId = NO_ID
+    private var screenMode = MODE_EMPTY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+//        enableEdgeToEdge()
         setContentView(R.layout.activity_shop_item)
 //        initViews()
 //        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-//        parseIntent()
-//        launchRightMode()
+        parseIntent()
+        launchRightMode()
 //        addTextChangedListener()
 //        observeViewModels()
 //
@@ -107,11 +107,13 @@ class ShopItemActivity : AppCompatActivity() {
         private const val EXTRA_SHOP_ITEM_ID = "extra_shop_item_id"
         private const val MODE_EDIT = "mode_edit"
         private const val MODE_ADD = "mode_add"
+        private const val MODE_EMPTY = "mode_empty"
+        private const val NO_ID = -1
 
         fun newItemAddItem(context: Context): Intent {
             val intent = Intent(context, ShopItemActivity::class.java)
             intent.putExtra(EXTRA_SCREEN_MODE, MODE_ADD)
-            Log.d("!!!", "add")
+            Log.d("!!!", "передан парметр ADD")
             return intent
         }
 
@@ -124,7 +126,7 @@ class ShopItemActivity : AppCompatActivity() {
         }
     }
 
-//    private fun initViews() {
+    //    private fun initViews() {
 //        tilName = findViewById(R.id.til_name)
 //        tilCount = findViewById(R.id.til_count)
 //        etName = findViewById(R.id.et_name)
@@ -132,30 +134,38 @@ class ShopItemActivity : AppCompatActivity() {
 //        saveButton = findViewById(R.id.save_button)
 //    }
 //
-//    private fun parseIntent() {
-//        if (!intent.hasExtra(EXTRA_SCREEN_MODE)) {
-//            throw RuntimeException("первая ошибка")
-//        }
-//        val mode = intent.getStringExtra(EXTRA_SCREEN_MODE)
-//        if (mode != MODE_EDIT && mode != MODE_ADD) {
-//            throw RuntimeException("вторая ошибка")
-//        }
-//        screenMode = mode
-//        if (screenMode == MODE_EDIT) {
-//            if (!intent.hasExtra(EXTRA_SHOP_ITEM_ID)) {
-//                throw RuntimeException("третья ошибка")
-//            }
-//        }
-//        shopItem = intent.getIntExtra(EXTRA_SHOP_ITEM_ID, -1)
-//    }
-//
-//    private fun launchRightMode() {
-//        when (screenMode) {
-//            MODE_EDIT -> launchEditMode()
-//            MODE_ADD -> launchAddMode()
-//        }
-//    }
-//
+    private fun parseIntent() {
+        val mode = intent.getStringExtra(EXTRA_SCREEN_MODE)
+
+        if (!intent.hasExtra(EXTRA_SCREEN_MODE)) {
+            throw RuntimeException("первая ошибка в SIA")
+        }
+
+        if (mode != MODE_EDIT && mode != MODE_ADD) {
+            throw RuntimeException("вторая ошибка")
+        }
+        screenMode = mode
+
+        shopItemId = intent.getIntExtra(EXTRA_SHOP_ITEM_ID, -1)
+
+        if (screenMode == MODE_EDIT) {
+            if (!intent.hasExtra(EXTRA_SHOP_ITEM_ID)) {
+                throw RuntimeException("третья ошибка")
+            }
+        }
+    }
+
+    private fun launchRightMode() {
+        val fragment = when (screenMode) {
+            MODE_EDIT -> ShopItemFragment.newInstanceEditItem(shopItemId)
+            MODE_ADD -> ShopItemFragment.newInstanceAddItem()
+            else -> throw RuntimeException("четвертая ошибка")
+        }
+        supportFragmentManager.beginTransaction()
+            .add(R.id.shop_item_container, fragment)
+            .commit()
+    }
+
 //    private fun launchAddMode() {
 //        saveButton.setOnClickListener {
 //            viewModel.addShopItem(etName.text.toString(), etCount.text.toString())
